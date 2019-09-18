@@ -7,8 +7,10 @@ namespace BookingApp.Tests
 	{
 		public TestBookingAppContext()
 		{
-			this.Countries = new TestCountryDbSet();
-			this.Places = new TestPlaceDbSet();
+			Countries = new TestCountryDbSet();
+			Places = new TestPlaceDbSet();
+			Regions = new TestRegionDbSet();
+			Rooms = new TestRoomDbSet();
 		}
 
 		public DbSet<Accommodation> Accommodations { get; set; }

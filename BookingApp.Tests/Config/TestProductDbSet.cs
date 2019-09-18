@@ -20,5 +20,20 @@ namespace BookingApp.Tests
 		}
 	}
 
+	class TestRegionDbSet : TestDbSet<Region>
+	{
+		public override Region Find(params object[] keyValues)
+		{
+			return this.SingleOrDefault(product => product.Id == (int)keyValues.Single());
+		}
+	}
+
+	class TestRoomDbSet : TestDbSet<Room>
+	{
+		public override Room Find(params object[] keyValues)
+		{
+			return this.SingleOrDefault(product => product.Id == (int)keyValues.Single());
+		}
+	}
 
 }
