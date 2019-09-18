@@ -36,4 +36,11 @@ namespace BookingApp.Tests
 		}
 	}
 
+	class TestRoomReservationDbSet : TestDbSet<RoomReservation>
+	{
+		public override RoomReservation Find(params object[] keyValues)
+		{
+			return this.SingleOrDefault(product => product.Id == (int)keyValues.Single());
+		}
+	}
 }

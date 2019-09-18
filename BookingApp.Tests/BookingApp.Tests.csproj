@@ -79,6 +79,7 @@
     <Compile Include="Config\TestBookingAppContext.cs" />
     <Compile Include="ControllerTests\TestPlacesController.cs" />
     <Compile Include="ControllerTests\TestRegionsController.cs" />
+    <Compile Include="ControllerTests\TestRoomReservationsController.cs" />
     <Compile Include="ControllerTests\TestRoomsController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
