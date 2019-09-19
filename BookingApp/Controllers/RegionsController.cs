@@ -1,4 +1,5 @@
 ﻿using BookingApp.Models;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
@@ -24,7 +25,7 @@ namespace BookingApp.Controllers
 		// GET: api/Regions
 		public IQueryable<Region> GetRegions()
 		{
-			return db.Regions;
+			return db.Regions.Include(p => p.Country);
 		}
 
 		// GET: api/Regions/5

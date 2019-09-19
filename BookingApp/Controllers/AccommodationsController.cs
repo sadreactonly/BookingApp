@@ -25,7 +25,8 @@ namespace BookingApp.Controllers
 		// GET: api/Accommodations
 		public IQueryable<Accommodation> GetAccommodations()
 		{
-			return db.Accommodations;
+			return db.Accommodations.Include(x => x.AccomodationType).Include(y => y.Owner)
+				.Include(p => p.Place).Include(t => t.Rooms);
 		}
 
 		// GET: api/Accommodations/5

@@ -1,4 +1,5 @@
 ﻿using BookingApp.Models;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
@@ -24,7 +25,7 @@ namespace BookingApp.Controllers
 		// GET: api/RoomReservations
 		public IQueryable<RoomReservation> GetRoomReservations()
 		{
-			return db.RoomReservations;
+			return db.RoomReservations.Include(x => x.Room);
 		}
 
 		// GET: api/RoomReservations/5

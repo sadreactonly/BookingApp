@@ -25,7 +25,7 @@ namespace BookingApp.Controllers
 		// GET: api/Places
 		public IQueryable<Place> GetPlaces()
 		{
-			return db.Places;
+			return db.Places.Include(p => p.Region);
 		}
 
 		// GET: api/Places/5
