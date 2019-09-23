@@ -1,4 +1,5 @@
 ﻿using BookingApp.Models;
+using System;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -82,13 +83,27 @@ namespace BookingApp.Controllers
 		{
 			if (!ModelState.IsValid)
 			{
-				return BadRequest(ModelState);
+				return BadRequest();
 			}
 
-			db.Places.Add(place);
-			db.SaveChanges();
+			if (PlaceExists(place.Id))
+			{
+				return BadRequest();
+			}
+			try
+			{
+				place.Region = db.Regions.Find(place.Region.Id);
+				db.Places.Add(place);
+				db.SaveChanges();
+				return CreatedAtRoute("DefaultApi", new { id = place.Id }, place);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+				return BadRequest();
+			}
 
-			return CreatedAtRoute("DefaultApi", new { id = place.Id }, place);
+
 		}
 
 		// DELETE: api/Places/5

@@ -28,6 +28,7 @@ namespace BookingApp.Controllers
 		}
 
 		// GET: api/Countries/5
+
 		[ResponseType(typeof(Country))]
 		public IHttpActionResult GetCountry(int id)
 		{
@@ -41,6 +42,7 @@ namespace BookingApp.Controllers
 		}
 
 		// PUT: api/Countries/5
+		
 		[ResponseType(typeof(void))]
 		public IHttpActionResult PutCountry(int id, Country country)
 		{
@@ -76,8 +78,9 @@ namespace BookingApp.Controllers
 		}
 
 		// POST: api/Countries
+		[HttpPost]
 		[ResponseType(typeof(Country))]
-		public IHttpActionResult PostCountry(Country country)
+		public IHttpActionResult PostCountry([FromBody]Country country)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -91,8 +94,9 @@ namespace BookingApp.Controllers
 		}
 
 		// DELETE: api/Countries/5
-		[ResponseType(typeof(Country))]
-		public IHttpActionResult DeleteCountry(int id)
+		[HttpDelete]
+		//[ResponseType(typeof(Country))]
+		public IHttpActionResult DeleteCountry([FromUri] int id)
 		{
 			Country country = db.Countries.Find(id);
 			if (country == null)
