@@ -87,7 +87,7 @@ namespace BookingApp.Controllers
 				return BadRequest(ModelState);
 			}
 
-            if(!CountryExists(country.Id))
+            if(CountryExists(country.Id))
             {
                 return BadRequest();
             }

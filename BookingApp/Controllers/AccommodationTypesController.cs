@@ -84,6 +84,11 @@ namespace BookingApp.Controllers
 				return BadRequest(ModelState);
 			}
 
+            if(AccommodationTypeExists(accommodationType.Id))
+            {
+                return BadRequest();
+            }
+
 			db.AccommodationTypes.Add(accommodationType);
 			db.SaveChanges();
 
