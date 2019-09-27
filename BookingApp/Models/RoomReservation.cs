@@ -9,7 +9,7 @@ namespace BookingApp.Models
 		public DateTime EndDate { get; set; }
 		public DateTime Timestamp { get; set; }
 		public Room Room { get; set; }
-		public BAIdentityUser User { get; set; }
+		public string UserName { get; set; }
 
 		public RoomReservation()
 		{

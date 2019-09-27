@@ -6,14 +6,13 @@ namespace BookingApp.Models
 {
 	public class BAContext : IdentityDbContext<BAIdentityUser>, IBAContext
 	{
-		//public DbSet<BAIdentityUser> AppUsers { get; set; }
 
 		public BAContext() : base("name=BookingApp")
 
 		{
 		}
 
-		public DbSet<Accommodation> Accommodations { get; set; }
+        public DbSet<Accommodation> Accommodations { get; set; }
 
 		public DbSet<AccommodationType> AccommodationTypes { get; set; }
 

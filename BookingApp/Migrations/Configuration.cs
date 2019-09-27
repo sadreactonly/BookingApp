@@ -67,9 +67,10 @@ namespace BookingApp.Migrations
 				var user1 = new BAIdentityUser() { Id = "user", UserName = "user", Email = "user@gmail.com", PasswordHash = BAIdentityUser.HashPassword("user") };
 				userManager.Create(user1);
 				userManager.AddToRole(user1.Id, "AppUser");
-			}
 
-			user.Accomodations = new List<Accommodation>();
+            }
+
+            user.Accomodations = new List<Accommodation>();
 			user.Comments = new List<Comment>();
 			user.RoomReservations = new List<RoomReservation>();
 
@@ -111,7 +112,7 @@ namespace BookingApp.Migrations
 			acc.Latitude = 0;
 			acc.Longitude = 0;
 			acc.Name = "Vila Rijana";
-			acc.Owner = user;
+			acc.OwnerName = user.Id;
 			acc.Place = place;
 			acc.Rooms = new List<Room>();
 			accType.Accommodations.Add(acc);
@@ -131,7 +132,7 @@ namespace BookingApp.Migrations
 			roomRes.EndDate = DateTime.Now;
 			roomRes.StartDate = DateTime.Now;
 			roomRes.Timestamp = DateTime.Now;
-			roomRes.User = user;
+			roomRes.UserName = user.Id;
 			roomRes.Room = room;
 			roomRes.Id = 1;
 			user.RoomReservations.Add(roomRes);
@@ -145,8 +146,8 @@ namespace BookingApp.Migrations
 			user.Comments.Add(comm);
 
 			try
-			{
-				context.Accommodations.Add(acc);
+            {
+                context.Accommodations.Add(acc);
 				context.AccommodationTypes.Add(accType);
 				context.Comments.Add(comm);
 				context.Countries.Add(country);

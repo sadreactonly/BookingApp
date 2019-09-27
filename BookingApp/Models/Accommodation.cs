@@ -21,9 +21,9 @@ namespace BookingApp.Models
 		[JsonIgnore]
 		public List<Comment> Comments { get; set; }
 
-		public AccommodationType AccomodationType { get; set; }
+		public AccommodationType AccommodationType { get; set; }
 		public Place Place { get; set; }
-		public BAIdentityUser Owner { get; set; }
+		public string OwnerName { get; set; }
 
 		public Accommodation()
 		{
