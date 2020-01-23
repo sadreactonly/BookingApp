@@ -11,23 +11,23 @@ namespace BookingApp.Controllers
 {
 	public class AccommodationTypesController : ApiController
 	{
-		private IAccommodationTypeService _repository;
+		private IAccommodationTypeService accommodationTypeService;
 
 		public AccommodationTypesController(IAccommodationTypeService repository)
 		{
-			_repository = repository;
+			accommodationTypeService = repository;
 		}
 
 		[HttpGet]
 		public IEnumerable<AccommodationType> GetAccommodationTypes()
 		{
-			return  _repository.GetAll();
+			return  accommodationTypeService.GetAll();
 		}
 
 		[ResponseType(typeof(AccommodationType))]
 		public IHttpActionResult GetAccommodationType(int id)
 		{
-			AccommodationType accommodationType = _repository.GetById(id);
+			AccommodationType accommodationType = accommodationTypeService.GetById(id);
 			if (accommodationType == null)
 			{
 				return NotFound();
@@ -49,10 +49,10 @@ namespace BookingApp.Controllers
 				return BadRequest();
 			}
 
-				if (_repository.Update(id,accommodationType))
-				{
-					return NotFound();
-				}
+			if (accommodationTypeService.Update(id,accommodationType))	
+			{	
+				return NotFound();	
+			}
 			
 			return StatusCode(HttpStatusCode.NoContent);
 		}
@@ -65,7 +65,7 @@ namespace BookingApp.Controllers
 				return BadRequest(ModelState);
 			}
 
-			if (!_repository.Add(accommodationType))
+			if (!accommodationTypeService.Add(accommodationType))
 			{
 				return BadRequest();
 			}
@@ -76,11 +76,10 @@ namespace BookingApp.Controllers
 		[ResponseType(typeof(AccommodationType))]
 		public IHttpActionResult DeleteAccommodationType(int id)
 		{
-			if (!_repository.Delete(id))
+			if (!accommodationTypeService.Delete(id))
 			{
 				return NotFound();
 			}
-
 
 			return Ok();
 		}
@@ -89,7 +88,7 @@ namespace BookingApp.Controllers
 		{
 			if (disposing)
 			{
-				_repository.Dispose();
+				accommodationTypeService.Dispose();
 			}
 			base.Dispose(disposing);
 		}

@@ -6,22 +6,19 @@ using System.Linq;
 using System.Net;
 using System.Web.Http;
 using System.Web.Http.Description;
+using BookingApp.Services;
+using System.Collections.Generic;
 
 namespace BookingApp.Controllers
 {
     [RoutePrefix("api/Accommodations")]
     public class AccommodationsController : ApiController
 	{
-		private IBAContext db;
+		private IAccommodationService accommodationService;
 
-		public AccommodationsController()
+		public AccommodationsController(IAccommodationService accommodationService)
 		{
-			db = new BAContext();
-		}
-
-		public AccommodationsController(IBAContext context)
-		{
-			db = context;
+			this.accommodationService = accommodationService;
 		}
 
         /// <summary>
@@ -29,9 +26,9 @@ namespace BookingApp.Controllers
         /// </summary>
         /// <returns></returns>
         [Route(Routes.GET_ACCOMMODATIONS)]
-        public IQueryable<Accommodation> GetAccommodations()
+        public IEnumerable<Accommodation> GetAccommodations()
 		{
-			return db.Accommodations.Include(x => x.AccommodationType).Include(p => p.Place).Include(t => t.Rooms);
+			return accommodationService.GetAll();
 		}
 
         /// <summary>
@@ -40,10 +37,11 @@ namespace BookingApp.Controllers
         /// </summary>
         /// <returns></returns>
         [Route("GetPopularAccommodations")]
-        public IQueryable<Accommodation> GetPopularAccommodations()
+        public IEnumerable<Accommodation> GetPopularAccommodations()
         {
-            return db.Accommodations.Include(x => x.AccommodationType).Include(p => p.Place).Include(t => t.Rooms).Where(x => x.AverageGrade > 4);
-        }
+			return accommodationService.GetPopularAccommodations();
+
+		}
 
         /// <summary>
         /// Get accommodation by id.
@@ -54,7 +52,7 @@ namespace BookingApp.Controllers
         [Route("GetAccommodation")]
         public IHttpActionResult GetAccommodation(int id)
 		{
-			Accommodation accommodation = db.Accommodations.Find(id);
+			Accommodation accommodation = accommodationService.GetById(id);
 			if (accommodation == null)
 			{
 				return NotFound();
@@ -83,22 +81,10 @@ namespace BookingApp.Controllers
 				return BadRequest();
 			}
 
-			db.MarkAsModified(accommodation);
 
-			try
+			if (accommodationService.Update(id, accommodation))
 			{
-				db.SaveChanges();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!AccommodationExists(id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
+				return NotFound();
 			}
 
 			return StatusCode(HttpStatusCode.NoContent);
@@ -118,18 +104,10 @@ namespace BookingApp.Controllers
 				return BadRequest(ModelState);
 			}
 
-			if (AccommodationExists(accommodation.Id))
+			if (!accommodationService.Add(accommodation))
 			{
-				return BadRequest("Accommodation exists.");
+				return BadRequest();
 			}
-
-
-			accommodation.Place = db.Places.Find(accommodation.Place.Id);
-			accommodation.AccommodationType = db.AccommodationTypes.Find(accommodation.AccommodationType.Id);
-			accommodation.Comments = new System.Collections.Generic.List<Comment>();
-
-			db.Accommodations.Add(accommodation);
-			db.SaveChanges();
 
 			return CreatedAtRoute("DefaultApi", new { id = accommodation.Id }, accommodation);
 		}
@@ -144,30 +122,21 @@ namespace BookingApp.Controllers
         [Route("DeleteAccommodation")]
         public IHttpActionResult DeleteAccommodation(int id)
 		{
-			Accommodation accommodation = db.Accommodations.Find(id);
-			if (accommodation == null)
+			if (!accommodationService.Delete(id))
 			{
 				return NotFound();
 			}
 
-			db.Accommodations.Remove(accommodation);
-			db.SaveChanges();
-
-			return Ok(accommodation);
+			return Ok();
 		}
 
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)
 			{
-				db.Dispose();
+				accommodationService.Dispose();
 			}
 			base.Dispose(disposing);
-		}
-
-		private bool AccommodationExists(int id)
-		{
-			return db.Accommodations.Count(e => e.Id == id) > 0;
 		}
 	}
 }

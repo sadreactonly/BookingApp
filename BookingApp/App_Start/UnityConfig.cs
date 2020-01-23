@@ -16,7 +16,8 @@ namespace BookingApp
             // it is NOT necessary to register your controllers
             
             container.RegisterType<IAccommodationTypeService, AccommodationTypeService>();
-            
+            container.RegisterType<IAccommodationService, AccommodationService>();
+
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
         }
     }
