@@ -66,9 +66,9 @@ namespace BookingApp.Tests
 		public void GetRoomReservations_ShouldReturnAllRoomReservations()
 		{
 			var context = new TestBookingAppContext();
-			context.RoomReservations.Add(new RoomReservation { Id = 1, StartDate = DateTime.Now, EndDate = DateTime.MaxValue, Timestamp = DateTime.Now, User = new BAIdentityUser(), Room = GetDemoRoom() });
-			context.RoomReservations.Add(new RoomReservation { Id = 2, StartDate = DateTime.Now, EndDate = DateTime.MaxValue, Timestamp = DateTime.Now, User = new BAIdentityUser(), Room = GetDemoRoom() });
-			context.RoomReservations.Add(new RoomReservation { Id = 3, StartDate = DateTime.Now, EndDate = DateTime.MaxValue, Timestamp = DateTime.Now, User = new BAIdentityUser(), Room = GetDemoRoom() });
+			context.RoomReservations.Add(new RoomReservation { Id = 1, StartDate = DateTime.Now, EndDate = DateTime.MaxValue, Timestamp = DateTime.Now, UserName = "kurac", Room = GetDemoRoom() });
+			context.RoomReservations.Add(new RoomReservation { Id = 2, StartDate = DateTime.Now, EndDate = DateTime.MaxValue, Timestamp = DateTime.Now, UserName = "kurac", Room = GetDemoRoom() });
+			context.RoomReservations.Add(new RoomReservation { Id = 3, StartDate = DateTime.Now, EndDate = DateTime.MaxValue, Timestamp = DateTime.Now, UserName = "kurac", Room = GetDemoRoom() });
 
 			var controller = new RoomReservationsController(context);
 			var result = controller.GetRoomReservations() as TestRoomReservationDbSet;
@@ -93,7 +93,7 @@ namespace BookingApp.Tests
 
 		private RoomReservation GetDemoRoomReservation()
 		{
-			return new RoomReservation { Id = 3, StartDate = DateTime.MinValue, EndDate = DateTime.MaxValue, Timestamp = DateTime.MaxValue, User = new BAIdentityUser(), Room = GetDemoRoom() };
+			return new RoomReservation { Id = 3, StartDate = DateTime.MinValue, EndDate = DateTime.MaxValue, Timestamp = DateTime.MaxValue, UserName = "kurac", Room = GetDemoRoom() };
 		}
 
 		private Room GetDemoRoom()

@@ -11,7 +11,9 @@ namespace BookingApp.Tests
 			Places = new TestPlaceDbSet();
 			Regions = new TestRegionDbSet();
 			Rooms = new TestRoomDbSet();
-		}
+            RoomReservations = new TestRoomReservationDbSet();
+
+        }
 
 		public DbSet<Accommodation> Accommodations { get; set; }
 
