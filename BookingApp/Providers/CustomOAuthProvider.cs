@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using BookingApp.Models;
+using BookingApp.Resources;
 
 namespace BookingApp.Providers
 {
@@ -49,15 +50,15 @@ namespace BookingApp.Providers
 
             if (roleName == "Admin")
             {
-                context.OwinContext.Response.Headers.Add("Role", new[] { "Admin" });
+                context.OwinContext.Response.Headers.Add("Role", new[] { Roles.ADMIN });
             }
             else if (roleName == "Manager")
             {
-                context.OwinContext.Response.Headers.Add("Role", new[] { "Manager" });
+                context.OwinContext.Response.Headers.Add("Role", new[] { Roles.MANAGER });
             }
             else
             {
-                context.OwinContext.Response.Headers.Add("Role", new[] { "User" });
+                context.OwinContext.Response.Headers.Add("Role", new[] { Roles.USER });
             }
 
             //Mora se dodati u header response-a kako bi se se Role atribut
