@@ -1,4 +1,6 @@
 ﻿using BookingApp.Models;
+using BookingApp.Services;
+using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
@@ -9,29 +11,23 @@ namespace BookingApp.Controllers
 {
 	public class AccommodationTypesController : ApiController
 	{
-		private IBAContext db;
+		private IAccommodationTypeService _repository;
 
-		public AccommodationTypesController()
+		public AccommodationTypesController(IAccommodationTypeService repository)
 		{
-			db = new BAContext();
+			_repository = repository;
 		}
 
-		public AccommodationTypesController(IBAContext context)
+		[HttpGet]
+		public IEnumerable<AccommodationType> GetAccommodationTypes()
 		{
-			db = context;
+			return  _repository.GetAll();
 		}
 
-		// GET: api/AccommodationTypes
-		public IQueryable<AccommodationType> GetAccommodationTypes()
-		{
-			return db.AccommodationTypes;
-		}
-
-		// GET: api/AccommodationTypes/5
 		[ResponseType(typeof(AccommodationType))]
 		public IHttpActionResult GetAccommodationType(int id)
 		{
-			AccommodationType accommodationType = db.AccommodationTypes.Find(id);
+			AccommodationType accommodationType = _repository.GetById(id);
 			if (accommodationType == null)
 			{
 				return NotFound();
@@ -40,7 +36,6 @@ namespace BookingApp.Controllers
 			return Ok(accommodationType);
 		}
 
-		// PUT: api/AccommodationTypes/5
 		[ResponseType(typeof(void))]
 		public IHttpActionResult PutAccommodationType(int id, AccommodationType accommodationType)
 		{
@@ -54,28 +49,14 @@ namespace BookingApp.Controllers
 				return BadRequest();
 			}
 
-			db.MarkAsModified(accommodationType);
-
-			try
-			{
-				db.SaveChanges();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!AccommodationTypeExists(id))
+				if (_repository.Update(id,accommodationType))
 				{
 					return NotFound();
 				}
-				else
-				{
-					throw;
-				}
-			}
-
+			
 			return StatusCode(HttpStatusCode.NoContent);
 		}
 
-		// POST: api/AccommodationTypes
 		[ResponseType(typeof(AccommodationType))]
 		public IHttpActionResult PostAccommodationType(AccommodationType accommodationType)
 		{
@@ -84,45 +65,33 @@ namespace BookingApp.Controllers
 				return BadRequest(ModelState);
 			}
 
-            if(AccommodationTypeExists(accommodationType.Id))
-            {
-                return BadRequest();
-            }
-
-			db.AccommodationTypes.Add(accommodationType);
-			db.SaveChanges();
+			if (!_repository.Add(accommodationType))
+			{
+				return BadRequest();
+			}
 
 			return CreatedAtRoute("DefaultApi", new { id = accommodationType.Id }, accommodationType);
 		}
 
-		// DELETE: api/AccommodationTypes/5
 		[ResponseType(typeof(AccommodationType))]
 		public IHttpActionResult DeleteAccommodationType(int id)
 		{
-			AccommodationType accommodationType = db.AccommodationTypes.Find(id);
-			if (accommodationType == null)
+			if (!_repository.Delete(id))
 			{
 				return NotFound();
 			}
 
-			db.AccommodationTypes.Remove(accommodationType);
-			db.SaveChanges();
 
-			return Ok(accommodationType);
+			return Ok();
 		}
 
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)
 			{
-				db.Dispose();
+				_repository.Dispose();
 			}
 			base.Dispose(disposing);
-		}
-
-		private bool AccommodationTypeExists(int id)
-		{
-			return db.AccommodationTypes.Count(e => e.Id == id) > 0;
 		}
 	}
 }
