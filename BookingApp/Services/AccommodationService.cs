@@ -41,7 +41,7 @@ namespace BookingApp.Services
 
 		public IEnumerable<Accommodation> GetAll()
 		{
-			return db.Accommodations.Include(x => x.AccommodationType).Include(p => p.Place).Include(t => t.Rooms);
+			return db.Accommodations.Include(x => x.AccommodationType).Include(p => p.Place.Region.Country).Include(t => t.Rooms);
 		}
 
 		public IEnumerable<Accommodation> GetPopularAccommodations()

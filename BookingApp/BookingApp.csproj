@@ -30,6 +30,7 @@
     <TypeScriptToolsVersion>3.5</TypeScriptToolsVersion>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerLaunchUrl>http://{ServiceIPAddress}</DockerLaunchUrl>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -300,9 +301,18 @@
     <Compile Include="Resources\Roles.cs" />
     <Compile Include="Resources\Routes.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
+    <Compile Include="Services\AccommodationService.cs" />
     <Compile Include="Services\AccommodationTypeService.cs" />
-    <Compile Include="Services\IAccommodationTypeService .cs" />
-    <Compile Include="Services\IRepositoryService.cs" />
+    <Compile Include="Services\CommentService.cs" />
+    <Compile Include="Services\Interfaces\IAccommodationService.cs" />
+    <Compile Include="Services\Interfaces\IAccommodationTypeService .cs" />
+    <Compile Include="Services\Interfaces\ICommentService.cs" />
+    <Compile Include="Services\Interfaces\ICountryService.cs" />
+    <Compile Include="Services\Interfaces\IPlaceService.cs" />
+    <Compile Include="Services\Interfaces\IRegionService.cs" />
+    <Compile Include="Services\Interfaces\IRepositoryService.cs" />
+    <Compile Include="Services\Interfaces\IRoomReservationService.cs" />
+    <Compile Include="Services\Interfaces\IRoomService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

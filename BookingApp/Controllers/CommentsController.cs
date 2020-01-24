@@ -1,4 +1,6 @@
 ﻿using BookingApp.Models;
+using BookingApp.Services.Interfaces;
+using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
@@ -9,29 +11,24 @@ namespace BookingApp.Controllers
 {
 	public class CommentsController : ApiController
 	{
-		private IBAContext db;
+		ICommentService commentService;
 
-		public CommentsController()
+		public CommentsController(ICommentService commentService)
 		{
-			db = new BAContext();
-		}
-
-		public CommentsController(IBAContext context)
-		{
-			db = context;
+			this.commentService = commentService;
 		}
 
 		// GET: api/Comments
-		public IQueryable<Comment> GetComments()
+		public IEnumerable<Comment> GetComments()
 		{
-			return db.Comments;
+			return commentService.GetAll();
 		}
 
 		// GET: api/Comments/5
 		[ResponseType(typeof(Comment))]
 		public IHttpActionResult GetComment(int id)
 		{
-			Comment comment = db.Comments.Find(id);
+			Comment comment = commentService.GetById(id);
 			if (comment == null)
 			{
 				return NotFound();
@@ -44,7 +41,7 @@ namespace BookingApp.Controllers
 		[ResponseType(typeof(void))]
 		public IHttpActionResult PutComment(int id, Comment comment)
 		{
-			if (!ModelState.IsValid)
+		if (!ModelState.IsValid)
 			{
 				return BadRequest(ModelState);
 			}
@@ -54,22 +51,10 @@ namespace BookingApp.Controllers
 				return BadRequest();
 			}
 
-			db.MarkAsModified(comment);
 
-			try
+			if (commentService.Update(id, comment))
 			{
-				db.SaveChanges();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!CommentExists(id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
+				return NotFound();
 			}
 
 			return StatusCode(HttpStatusCode.NoContent);
@@ -84,8 +69,10 @@ namespace BookingApp.Controllers
 				return BadRequest(ModelState);
 			}
 
-			db.Comments.Add(comment);
-			db.SaveChanges();
+			if (!commentService.Add(comment))
+			{
+				return BadRequest();
+			}
 
 			return CreatedAtRoute("DefaultApi", new { id = comment.Id }, comment);
 		}
@@ -94,30 +81,21 @@ namespace BookingApp.Controllers
 		[ResponseType(typeof(Comment))]
 		public IHttpActionResult DeleteComment(int id)
 		{
-			Comment comment = db.Comments.Find(id);
-			if (comment == null)
+			if (!commentService.Delete(id))
 			{
 				return NotFound();
 			}
 
-			db.Comments.Remove(comment);
-			db.SaveChanges();
-
-			return Ok(comment);
+			return Ok();
 		}
 
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)
 			{
-				db.Dispose();
+				commentService.Dispose();
 			}
 			base.Dispose(disposing);
-		}
-
-		private bool CommentExists(int id)
-		{
-			return db.Comments.Count(e => e.Id == id) > 0;
 		}
 	}
 }
