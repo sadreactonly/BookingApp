@@ -15,7 +15,7 @@ namespace BookingApp.Services
 
 		public CommentService()
 		{
-			db = new BAContext();
+			db = BAContext.Instance;
 		}
 		public bool Add(Comment comment)
 		{
@@ -40,7 +40,7 @@ namespace BookingApp.Services
 
 		public void Dispose()
 		{
-			db.Dispose();
+			//db.Dispose();
 		}
 
 		public IEnumerable<Comment> GetAll()

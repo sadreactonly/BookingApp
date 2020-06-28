@@ -1,11 +1,31 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Data.Entity;
+using System.Runtime.InteropServices;
 
 namespace BookingApp.Models
 {
 	public class BAContext : IdentityDbContext<BAIdentityUser>, IBAContext
 	{
+
+		private static readonly object _lock = new object();
+		private static BAContext instance;
+
+		public static BAContext Instance
+		{
+			get
+			{
+				lock (_lock)
+				{
+					if (instance == null)
+					{
+						instance = new BAContext();
+					}
+					return instance;
+				}
+				
+			}
+		}
 
 		public BAContext() : base("name=BookingApp")
 

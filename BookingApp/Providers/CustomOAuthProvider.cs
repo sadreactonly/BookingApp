@@ -42,7 +42,7 @@ namespace BookingApp.Providers
                 return;
             }
 
-            BAContext db = new BAContext();
+            BAContext db = BAContext.Instance;
 
             var userRole = user.Roles.FirstOrDefault();
             var role = db.Roles.SingleOrDefault(r => r.Id == userRole.RoleId);

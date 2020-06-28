@@ -7,7 +7,7 @@ using BookingApp.Models;
 
 namespace BookingApp.Services.Interfaces
 {
-	interface IRegionService:IRepositoryService<Region>
+	public interface IRegionService:IRepositoryService<Region>
 	{
 		
 	}

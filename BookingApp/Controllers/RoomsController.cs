@@ -1,4 +1,5 @@
 ﻿using BookingApp.Models;
+using BookingApp.Services.Interfaces;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -10,29 +11,24 @@ namespace BookingApp.Controllers
 {
 	public class RoomsController : ApiController
 	{
-		private IBAContext db;
+		private IRoomService roomService;
 
-		public RoomsController()
+		public RoomsController(IRoomService roomService)
 		{
-			db = new BAContext();
-		}
-
-		public RoomsController(IBAContext context)
-		{
-			db = context;
+			this.roomService = roomService;
 		}
 
 		// GET: api/Rooms
 		public IQueryable<Room> GetRooms()
 		{
-			return db.Rooms.Include(x => x.Accomodation);
+			return (IQueryable<Room>)roomService.GetAll();
 		}
 
 		// GET: api/Rooms/5
 		[ResponseType(typeof(Room))]
 		public IHttpActionResult GetRoom(int id)
 		{
-			Room room = db.Rooms.Find(id);
+			Room room = roomService.GetById(id);
 			if (room == null)
 			{
 				return NotFound();
@@ -55,23 +51,7 @@ namespace BookingApp.Controllers
 				return BadRequest();
 			}
 
-			db.MarkAsModified(room);
-
-			try
-			{
-				db.SaveChanges();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!RoomExists(id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
+			roomService.Update(id, room);
 
 			return StatusCode(HttpStatusCode.NoContent);
 		}
@@ -85,14 +65,7 @@ namespace BookingApp.Controllers
 				return BadRequest(ModelState);
 			}
 
-            if(RoomExists(room.Id))
-            {
-                return BadRequest();
-            }
-
-            room.Accomodation = db.Accommodations.Find(room.Accomodation.Id);
-			db.Rooms.Add(room);
-			db.SaveChanges();
+			roomService.Add(room);
 
 			return CreatedAtRoute("DefaultApi", new { id = room.Id }, room);
 		}
@@ -101,14 +74,13 @@ namespace BookingApp.Controllers
 		[ResponseType(typeof(Room))]
 		public IHttpActionResult DeleteRoom(int id)
 		{
-			Room room = db.Rooms.Find(id);
+			Room room = roomService.GetById(id);
 			if (room == null)
 			{
 				return NotFound();
 			}
 
-			db.Rooms.Remove(room);
-			db.SaveChanges();
+			roomService.Delete(id);
 
 			return Ok(room);
 		}
@@ -117,14 +89,11 @@ namespace BookingApp.Controllers
 		{
 			if (disposing)
 			{
-				db.Dispose();
+				roomService.Dispose();
 			}
 			base.Dispose(disposing);
 		}
 
-		private bool RoomExists(int id)
-		{
-			return db.Rooms.Count(e => e.Id == id) > 0;
-		}
+		
 	}
 }

@@ -13,7 +13,7 @@ namespace BookingApp.Services
 
 		public AccommodationService()
 		{
-			db = new BAContext();
+			db = BAContext.Instance;
 		}
 		public bool Add(Accommodation accommodation)
 		{
@@ -83,7 +83,7 @@ namespace BookingApp.Services
 
 		public void Dispose()
 		{
-			db.Dispose();
+			//db.Dispose();
 		}
 
 	}

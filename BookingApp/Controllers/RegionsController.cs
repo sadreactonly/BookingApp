@@ -1,4 +1,5 @@
 ﻿using BookingApp.Models;
+using BookingApp.Services.Interfaces;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -10,29 +11,25 @@ namespace BookingApp.Controllers
 {
 	public class RegionsController : ApiController
 	{
-		private IBAContext db;
 
-		public RegionsController()
-		{
-			db = new BAContext();
-		}
+		private IRegionService regionService;
 
-		public RegionsController(IBAContext context)
+		public RegionsController(IRegionService regionService)
 		{
-			db = context;
+			this.regionService = regionService;
 		}
 
 		// GET: api/Regions
 		public IQueryable<Region> GetRegions()
 		{
-			return db.Regions.Include(p => p.Country);
+			return (IQueryable<Region>)regionService.GetAll();
 		}
 
 		// GET: api/Regions/5
 		[ResponseType(typeof(Region))]
 		public IHttpActionResult GetRegion(int id)
 		{
-			Region region = db.Regions.Find(id);
+			Region region = regionService.GetById(id);
 			if (region == null)
 			{
 				return NotFound();
@@ -55,23 +52,7 @@ namespace BookingApp.Controllers
 				return BadRequest();
 			}
 
-			db.MarkAsModified(region);
-
-			try
-			{
-				db.SaveChanges();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!RegionExists(id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
+			regionService.Update(id, region);
 
 			return StatusCode(HttpStatusCode.NoContent);
 		}
@@ -85,14 +66,12 @@ namespace BookingApp.Controllers
 				return BadRequest(ModelState);
 			}
             
-            if(RegionExists(region.Id))
-            {
-                return BadRequest();
-            }
+            //if(RegionExists(region.Id))
+            //{
+            //    return BadRequest();
+            //}
 
-            region.Country = db.Countries.Find(region.Country.Id);
-			db.Regions.Add(region);
-			db.SaveChanges();
+			regionService.Add(region);
 
 			return CreatedAtRoute("DefaultApi", new { id = region.Id }, region);
 		}
@@ -101,14 +80,13 @@ namespace BookingApp.Controllers
 		[ResponseType(typeof(Region))]
 		public IHttpActionResult DeleteRegion(int id)
 		{
-			Region region = db.Regions.Find(id);
+			Region region = regionService.GetById(id);
 			if (region == null)
 			{
 				return NotFound();
 			}
 
-			db.Regions.Remove(region);
-			db.SaveChanges();
+			regionService.Delete(id);
 
 			return Ok(region);
 		}
@@ -117,14 +95,10 @@ namespace BookingApp.Controllers
 		{
 			if (disposing)
 			{
-				db.Dispose();
+				regionService.Dispose();
 			}
 			base.Dispose(disposing);
 		}
 
-		private bool RegionExists(int id)
-		{
-			return db.Regions.Count(e => e.Id == id) > 0;
-		}
 	}
 }

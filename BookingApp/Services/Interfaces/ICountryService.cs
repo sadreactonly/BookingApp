@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BookingApp.Models;
 namespace BookingApp.Services.Interfaces
 {
-	interface ICountryService:IRepositoryService<Country>
+	public interface ICountryService:IRepositoryService<Country>
 	{
 	}
 }

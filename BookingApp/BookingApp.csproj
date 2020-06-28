@@ -304,6 +304,7 @@
     <Compile Include="Services\AccommodationService.cs" />
     <Compile Include="Services\AccommodationTypeService.cs" />
     <Compile Include="Services\CommentService.cs" />
+    <Compile Include="Services\CountryService.cs" />
     <Compile Include="Services\Interfaces\IAccommodationService.cs" />
     <Compile Include="Services\Interfaces\IAccommodationTypeService .cs" />
     <Compile Include="Services\Interfaces\ICommentService.cs" />
@@ -313,6 +314,10 @@
     <Compile Include="Services\Interfaces\IRepositoryService.cs" />
     <Compile Include="Services\Interfaces\IRoomReservationService.cs" />
     <Compile Include="Services\Interfaces\IRoomService.cs" />
+    <Compile Include="Services\RegionService.cs" />
+    <Compile Include="Services\PlaceService.cs" />
+    <Compile Include="Services\RoomReservationService.cs" />
+    <Compile Include="Services\RoomService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

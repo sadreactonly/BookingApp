@@ -1,4 +1,5 @@
 ﻿using BookingApp.Models;
+using BookingApp.Services.Interfaces;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
@@ -9,22 +10,16 @@ namespace BookingApp.Controllers
 {
 	public class CountriesController : ApiController
 	{
-		private IBAContext db;
+		ICountryService countryService;
 
-		public CountriesController()
+		public CountriesController(ICountryService countryService)
 		{
-			db = new BAContext();
+			this.countryService = countryService;
 		}
-
-		public CountriesController(IBAContext context)
-		{
-			db = context;
-		}
-
 		// GET: api/Countries
 		public IQueryable<Country> GetCountries()
 		{
-			return db.Countries;
+			return (IQueryable<Country>)countryService.GetAll();
 		}
 
 		// GET: api/Countries/5
@@ -32,7 +27,7 @@ namespace BookingApp.Controllers
 		[ResponseType(typeof(Country))]
 		public IHttpActionResult GetCountry(int id)
 		{
-			Country country = db.Countries.Find(id);
+			Country country = countryService.GetById(id);
 			if (country == null)
 			{
 				return NotFound();
@@ -56,22 +51,10 @@ namespace BookingApp.Controllers
 				return BadRequest();
 			}
 
-			db.MarkAsModified(country);
 
-			try
+			if (countryService.Update(id, country))
 			{
-				db.SaveChanges();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!CountryExists(id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
+				return NotFound();
 			}
 
 			return StatusCode(HttpStatusCode.NoContent);
@@ -87,13 +70,8 @@ namespace BookingApp.Controllers
 				return BadRequest(ModelState);
 			}
 
-            if(CountryExists(country.Id))
-            {
-                return BadRequest();
-            }
 
-			db.Countries.Add(country);
-			db.SaveChanges();
+			countryService.Add(country);
 
 			return CreatedAtRoute("DefaultApi", new { id = country.Id }, country);
 		}
@@ -103,14 +81,13 @@ namespace BookingApp.Controllers
 		//[ResponseType(typeof(Country))]
 		public IHttpActionResult DeleteCountry([FromUri] int id)
 		{
-			Country country = db.Countries.Find(id);
+			Country country = countryService.GetById(id);
 			if (country == null)
 			{
 				return NotFound();
 			}
 
-			db.Countries.Remove(country);
-			db.SaveChanges();
+			countryService.Delete(country.Id);
 
 			return Ok(country);
 		}
@@ -119,14 +96,11 @@ namespace BookingApp.Controllers
 		{
 			if (disposing)
 			{
-				db.Dispose();
+				countryService.Dispose();
 			}
 			base.Dispose(disposing);
 		}
 
-		private bool CountryExists(int id)
-		{
-			return db.Countries.Count(e => e.Id == id) > 0;
-		}
+
 	}
 }

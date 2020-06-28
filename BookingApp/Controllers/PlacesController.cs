@@ -1,4 +1,5 @@
 ﻿using BookingApp.Models;
+using BookingApp.Services.Interfaces;
 using System;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -11,30 +12,24 @@ namespace BookingApp.Controllers
 {
 	public class PlacesController : ApiController
 	{
-		private IBAContext db;
-
-		public PlacesController()
+		private IPlaceService placeService;
+		public PlacesController(IPlaceService placeService)
 		{
-			db = new BAContext();
-		}
-
-		public PlacesController(IBAContext context)
-		{
-			db = context;
+			this.placeService = placeService;
 		}
 
 		// GET: api/Places
 		public IQueryable<Place> GetPlaces()
 		{
-            
-			return db.Places.Include(p => p.Region);
+
+			return (IQueryable<Place>)placeService.GetAll();
 		}
 
 		// GET: api/Places/5
 		[ResponseType(typeof(Place))]
 		public IHttpActionResult GetPlace(int id)
 		{
-			Place place = db.Places.Find(id);
+			Place place = placeService.GetById(id);
 			if (place == null)
 			{
 				return NotFound();
@@ -57,23 +52,7 @@ namespace BookingApp.Controllers
 				return BadRequest();
 			}
 
-			db.MarkAsModified(place);
-
-			try
-			{
-				db.SaveChanges();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!PlaceExists(id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
+			placeService.Update(id,place);
 
 			return StatusCode(HttpStatusCode.NoContent);
 		}
@@ -87,15 +66,9 @@ namespace BookingApp.Controllers
 				return BadRequest();
 			}
 
-			if (PlaceExists(place.Id))
-			{
-				return BadRequest();
-			}
 			try
 			{
-				place.Region = db.Regions.Find(place.Region.Id);
-				db.Places.Add(place);
-				db.SaveChanges();
+				placeService.Add(place);
 				return CreatedAtRoute("DefaultApi", new { id = place.Id }, place);
 			}
 			catch (Exception ex)
@@ -111,15 +84,13 @@ namespace BookingApp.Controllers
 		[ResponseType(typeof(Place))]
 		public IHttpActionResult DeletePlace(int id)
 		{
-			Place place = db.Places.Find(id);
+			Place place = placeService.GetById(id);
 			if (place == null)
 			{
 				return NotFound();
 			}
 
-			db.Places.Remove(place);
-			db.SaveChanges();
-
+			placeService.Delete(id);
 			return Ok(place);
 		}
 
@@ -127,14 +98,11 @@ namespace BookingApp.Controllers
 		{
 			if (disposing)
 			{
-				db.Dispose();
+				placeService.Dispose();
 			}
 			base.Dispose(disposing);
 		}
 
-		private bool PlaceExists(int id)
-		{
-			return db.Places.Count(e => e.Id == id) > 0;
-		}
+
 	}
 }

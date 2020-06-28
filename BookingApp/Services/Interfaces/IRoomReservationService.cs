@@ -7,7 +7,7 @@ using BookingApp.Models;
 
 namespace BookingApp.Services.Interfaces
 {
-	interface IRoomReservationService:IRepositoryService<RoomReservation>
+	public interface IRoomReservationService:IRepositoryService<RoomReservation>
 	{
 	}
 }

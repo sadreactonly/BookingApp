@@ -8,7 +8,7 @@ using BookingApp.Models;
 
 namespace BookingApp.Services.Interfaces
 {
-	interface IPlaceService:IRepositoryService<Place>
+	public interface IPlaceService:IRepositoryService<Place>
 	{
 	}
 }
